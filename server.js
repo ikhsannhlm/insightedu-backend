@@ -1,9 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import cors
-require('dotenv').config();
+const cors = require('cors');
 const userRouter = require('./routes/users');
-const authRouter = require('./routes/auth'); // Import rute autentikasi
+const authRouter = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,15 +19,9 @@ connection.once('open', () => {
     console.log('MongoDB database connection established successfully');
 });
 
-// Gunakan middleware cors
 app.use(cors());
-
-// Middleware untuk parsing body dari JSON
 app.use(express.json());
-
-// Gunakan rute untuk API users
 app.use('/api/users', userRouter);
-// Gunakan rute untuk API autentikasi
 app.use('/api', authRouter);
 
 app.listen(PORT, () => {

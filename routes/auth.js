@@ -9,8 +9,12 @@ require('dotenv').config();
 router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email already in use' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        // Tambahkan key 'personality' dengan nilai awal null
         const newUser = new User({ username, email, password: hashedPassword, personality: null });
         await newUser.save();
         res.status(201).json({ message: 'User created successfully' });
@@ -48,7 +52,7 @@ router.post('/login', async (req, res) => {
             { expiresIn: 3600 },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token });
+                res.json({ token, user });
             }
         );
     } catch (err) {
